@@ -1,0 +1,122 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Efficiently",
+  "version": "0.4.0",
+  "description": "Get a rough AI usage estimate. Before you send.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://grok.com/*",
+        "https://x.ai/*",
+        "https://manus.im/*",
+        "https://lovable.dev/*",
+        "https://bolt.new/*",
+        "https://replit.com/*",
+        "https://*.town.com/*",
+        "https://platform.openai.com/*",
+        "https://console.anthropic.com/*",
+        "https://aistudio.google.com/*",
+        "https://platform.deepseek.com/*",
+        "https://console.x.ai/*",
+        "https://console.mistral.ai/*",
+        "https://console.groq.com/*",
+        "https://cloud.together.ai/*",
+        "https://fireworks.ai/*",
+        "https://app.fireworks.ai/*",
+        "https://openrouter.ai/*",
+        "https://modelstudio.console.alibabacloud.com/*",
+        "https://dashscope.console.aliyun.com/*",
+        "https://bigmodel.cn/*",
+        "https://www.bigmodel.cn/*",
+        "https://z.ai/*",
+        "https://www.z.ai/*",
+        "https://platform.moonshot.ai/*",
+        "https://platform.moonshot.cn/*",
+        "https://dashboard.cohere.com/*"
+      ],
+      "js": [
+        "storage.js",
+        "estimator.js",
+        "content.js"
+      ],
+      "css": [
+        "bubble.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://promptefficiently.com/*",
+        "https://www.promptefficiently.com/*"
+      ],
+      "js": [
+        "bridge.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/icon16.png",
+        "icons/icon48.png",
+        "icons/icon48-light.png"
+      ],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://grok.com/*",
+        "https://x.ai/*",
+        "https://manus.im/*",
+        "https://lovable.dev/*",
+        "https://bolt.new/*",
+        "https://replit.com/*",
+        "https://*.town.com/*",
+        "https://platform.openai.com/*",
+        "https://console.anthropic.com/*",
+        "https://aistudio.google.com/*",
+        "https://platform.deepseek.com/*",
+        "https://console.x.ai/*",
+        "https://console.mistral.ai/*",
+        "https://console.groq.com/*",
+        "https://cloud.together.ai/*",
+        "https://fireworks.ai/*",
+        "https://app.fireworks.ai/*",
+        "https://openrouter.ai/*",
+        "https://modelstudio.console.alibabacloud.com/*",
+        "https://dashscope.console.aliyun.com/*",
+        "https://bigmodel.cn/*",
+        "https://www.bigmodel.cn/*",
+        "https://z.ai/*",
+        "https://www.z.ai/*",
+        "https://platform.moonshot.ai/*",
+        "https://platform.moonshot.cn/*",
+        "https://dashboard.cohere.com/*"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "hello@promptefficiently.com",
+      "strict_min_version": "121.0"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://promptefficiently.com/*"
+  ]
+}
