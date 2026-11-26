@@ -214,6 +214,12 @@
     function stop(){if(!peDrag)return;if(peDidDrag){var r=bubble.getBoundingClientRect();pePlace(r.left,r.top,true);}peDrag=null;}
     move.addEventListener('click',function(){if(peDidDrag){peDidDrag=false;return;}peExpanded=!peExpanded;var detail=bubble.querySelector('.pe-expanded-details');if(detail)detail.hidden=!peExpanded;bubble.classList.toggle('pe-expanded',peExpanded);move.setAttribute('aria-expanded',String(peExpanded));positionBubble();});
     move.addEventListener('pointerup',stop);move.addEventListener('pointercancel',stop);
+    if(!bubble.__peBodyDrag){bubble.__peBodyDrag=true;
+      var bmove=function(e){if(!peDrag||!peDrag.body)return;if(Math.hypot(e.clientX-peDrag.sx,e.clientY-peDrag.sy)>4)peDidDrag=true;if(peDidDrag)pePlace(e.clientX-peDrag.x,e.clientY-peDrag.y,false);};
+      var bstop=function(){window.removeEventListener('pointermove',bmove,true);window.removeEventListener('pointerup',bstop,true);window.removeEventListener('pointercancel',bstop,true);if(!peDrag||!peDrag.body)return;if(peDidDrag){var r=bubble.getBoundingClientRect();pePlace(r.left,r.top,true);}peDrag=null;};
+      bubble.addEventListener('pointerdown',function(e){if(e.button!==0||peDrag)return;if(e.target.closest&&e.target.closest('textarea,input,select,.pe-drag-handle'))return;var r=bubble.getBoundingClientRect();peDidDrag=false;peDrag={x:e.clientX-r.left,y:e.clientY-r.top,sx:e.clientX,sy:e.clientY,body:true};window.addEventListener('pointermove',bmove,true);window.addEventListener('pointerup',bstop,true);window.addEventListener('pointercancel',bstop,true);});
+      bubble.addEventListener('click',function(e){if(peDidDrag&&!(e.target.closest&&e.target.closest('.pe-drag-handle'))){peDidDrag=false;e.preventDefault();e.stopPropagation();}},true);
+    }
     move.addEventListener('keydown',function(e){var d={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!d)return;e.preventDefault();var r=bubble.getBoundingClientRect(),step=e.shiftKey?1:10;pePlace(r.left+d[0]*step,r.top+d[1]*step,true);});
   }
   function showBubble() { try { pePosition=JSON.parse(PE_LS.getItem('pe_widget_position')||'null'); } catch(e) { pePosition=null; } bubble.classList.remove('pe-hidden');peControls();positionBubble(); }
