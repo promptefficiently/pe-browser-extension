@@ -319,14 +319,10 @@
     b.className = 'pe-bubble pe-live pe-' + est.verdict;
     var fitHtml = '';
     try {
-      var fit = platform.kind === 'tokens' ? null : cheapestFreeFit(size, tt && tt.key);
       if (platform.kind === 'tokens') {
         fitHtml = '<span class="pe-fit">Pay-per-use API, billed per token. No free tier tracked.</span>';
-      } else
-      if (fit && fit.platform.id !== platform.id && fit.headroom >= 1) {
-        fitHtml = '<span class="pe-fit">Rough guide: this fits in ' + fit.platform.name + "'s free tier (about " + fit.rangeText + '). Check their current limits first.</span>';
-      } else if (!fit || fit.headroom < 1) {
-        fitHtml = '<span class="pe-fit">Rough guide: this is likely beyond the free tiers we track.</span>';
+      } else if (platform.kind === 'credits' && platform.freeAllowance && platform.freeUnit && platform.freePeriod) {
+        fitHtml = '<span class="pe-fit">Rough guide: ' + platform.name + "'s free plan is " + Number(platform.freeAllowance).toLocaleString('en-GB') + ' ' + platform.freeUnit + ' a ' + platform.freePeriod + '. Check their current limits first.</span>';
       }
     } catch (e) {}
     b.innerHTML = '<span class="pe-range" title="Rough task estimate, not a quote or remaining balance. Actual usage depends on model, context, output and tools.">About ' + est.rangeText + '</span>' +

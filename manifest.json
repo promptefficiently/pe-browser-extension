@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Prompt Efficiently",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Get a rough AI usage estimate. Before you send.",
   "icons": {
     "16": "icons/icon16.png",
