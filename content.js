@@ -235,7 +235,7 @@
     resolvePlatform();
     var b = ensureBubble();
     b.className = 'pe-bubble pe-gate';
-    b.innerHTML = peBrand() + '<a class="pe-btn" href="https://promptefficiently.com/app.html" target="_blank" rel="noopener noreferrer">Sign in on promptefficiently.com</a>';
+    b.innerHTML = peBrand() + '<a class="pe-btn" href="https://promptefficiently.com/app.html?ref=extension" target="_blank" rel="noopener noreferrer">Sign in on promptefficiently.com</a>';
     showBubble();
   }
 
@@ -300,7 +300,7 @@
     if(!pePermit){
       var errorBubble=ensureBubble();errorBubble.className='pe-bubble pe-over';
       errorBubble.textContent=pePermitError==='daily_limit'?"That's your 5 free estimates for today.":'Connect and sign in on promptefficiently.com to check your plan.';
-      var action=document.createElement('a');action.href='https://promptefficiently.com/app#upgrade';action.target='_blank';action.rel='noopener';action.className='pe-link';action.textContent=pePermitError==='daily_limit'?'Upgrade to Pro':'Sign in';errorBubble.appendChild(document.createElement('br'));errorBubble.appendChild(action);
+      var action=document.createElement('a');action.href='https://promptefficiently.com/app?ref=extension#upgrade';action.target='_blank';action.rel='noopener';action.className='pe-link';action.textContent=pePermitError==='daily_limit'?'Upgrade to Pro':'Sign in';errorBubble.appendChild(document.createElement('br'));errorBubble.appendChild(action);
       showBubble();return;
     }
     var isPro = pePermit.pro===true;
@@ -356,6 +356,17 @@
     var afterLabel=el('h3','Rewrite');afterLabel.hidden=true;var after=el('textarea');after.readOnly=true;after.hidden=true;
     var copy=el('button','Copy rewrite');copy.type='button';copy.hidden=true;
     copy.addEventListener('click',async function(){try{await navigator.clipboard.writeText(after.value);status.textContent='Copied. Compare with your original before pasting.';}catch{after.focus();after.select();status.textContent='Copy was blocked. Select and copy the rewrite manually.';}});
+    var shareBtn=el('button','Share before/after');shareBtn.type='button';shareBtn.hidden=true;var shareBox=null;
+    shareBtn.addEventListener('click',function(){
+      if(shareBox){shareBox.remove();shareBox=null;return;}
+      var data=window.PEShare&&window.PEShare.build(original,after.value);if(!data)return;
+      shareBox=document.createElement('div');shareBox.className='pe-share-box';
+      var note=document.createElement('p');note.textContent='This is exactly what will be copied. Nothing is sent or posted by us. Check it for anything private first.'+(data.truncated?' Long prompts are shortened here.':'');shareBox.appendChild(note);
+      var cp=document.createElement('button');cp.type='button';cp.textContent='Copy share text';
+      cp.addEventListener('click',async function(){try{await navigator.clipboard.writeText(data.text);status.textContent='Share text copied.';}catch{status.textContent='Copy was blocked. Nothing was shared.';}});
+      var no=document.createElement('button');no.type='button';no.textContent='Cancel';no.addEventListener('click',function(){shareBox.remove();shareBox=null;});
+      shareBox.appendChild(cp);shareBox.appendChild(no);var cardEl=window.PEShare.render(document,data);cardEl.style.maxHeight='220px';cardEl.style.overflowY='auto';cardEl.style.marginTop='8px';shareBox.appendChild(cardEl);panel.appendChild(shareBox);positionBubble();
+    });
     var close=el('button','Close');close.type='button';function dismiss(){panel.remove();if(bubble){bubble.classList.remove('pe-rewriting');positionBubble();}}close.addEventListener('click',dismiss);
     generate.addEventListener('click',function(){
       generate.disabled=true;consent.disabled=true;status.textContent='Rewriting. Your original prompt is unchanged.';
@@ -363,7 +374,7 @@
       if(typeof chrome==='undefined'||!chrome.runtime){status.textContent='Install and sign in to the extension to rewrite.';return;}
       chrome.runtime.sendMessage({type:'pe-rewrite',requestId:id,text:original,consent:true,adult:true,mode:modeSel.value},function(result){
         if(chrome.runtime.lastError||!result?.ok){status.textContent=result?.message||'Rewrite unavailable. Your original prompt is unchanged. No automatic retry was made.';return;}
-        after.value=result.rewrite;after.hidden=false;afterLabel.hidden=true;copy.hidden=false;generate.hidden=true;label.hidden=true;
+        after.value=result.rewrite;after.hidden=false;afterLabel.hidden=true;copy.hidden=false;shareBtn.hidden=!(!result.unchanged&&window.PEShare&&window.PEShare.build(original,result.rewrite));generate.hidden=true;label.hidden=true;
         status.textContent=result.unchanged?'No safer version returned. Original kept.':'Review meaning. Lower costs are not guaranteed.';positionBubble();
       });
     });
