@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Prompt Efficiently",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Get a rough AI usage estimate. Before you send.",
   "icons": {
     "16": "icons/icon16.png",
@@ -15,6 +15,15 @@
     {
       "matches": [
         "https://chatgpt.com/*",
+        "https://www.kimi.com/*",
+        "https://www.kimi.ai/*",
+        "https://chat.qwen.ai/*",
+        "https://v0.app/*",
+        "https://v0.dev/*",
+        "https://elevenlabs.io/*",
+        "https://suno.com/*",
+        "https://app.runwayml.com/*",
+        "https://pika.art/*",
         "https://claude.ai/*",
         "https://gemini.google.com/*",
         "https://grok.com/*",
@@ -76,6 +85,15 @@
       ],
       "matches": [
         "https://chatgpt.com/*",
+        "https://www.kimi.com/*",
+        "https://www.kimi.ai/*",
+        "https://chat.qwen.ai/*",
+        "https://v0.app/*",
+        "https://v0.dev/*",
+        "https://elevenlabs.io/*",
+        "https://suno.com/*",
+        "https://app.runwayml.com/*",
+        "https://pika.art/*",
         "https://claude.ai/*",
         "https://gemini.google.com/*",
         "https://grok.com/*",

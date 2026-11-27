@@ -13,7 +13,8 @@
     if (i > MAX_CHARS * 0.6) s = s.slice(0, i);
     return { text: s.replace(/[\s,.;:!?-]+$/, '') + '\u2026', cut: true };
   }
-  function build(original, rewritten) {
+  function build(original, rewritten, platform) {
+    var on = platform ? ' on ' + String(platform).replace(/[\r\n]+/g, ' ').slice(0, 40) : '';
     var a = tokens(original), b = tokens(rewritten);
     var saved = a - b;
     if (!(saved > 0) || !String(rewritten || '').trim()) return null; /* nothing to brag about, so no card */
@@ -22,10 +23,10 @@
     var lines = [
       'Before (about ' + a + ' tokens): \u201c' + o.text + '\u201d',
       'After (about ' + b + ' tokens): \u201c' + r.text + '\u201d',
-      'Saved about ' + saved + ' tokens (' + pct + '%) with Prompt Efficiently. Rough estimate.',
+      'Saved about ' + saved + ' tokens (' + pct + '%) with Prompt Efficiently' + on + '. Rough estimate.',
       LINK
     ];
-    return { before: o.text, after: r.text, beforeTokens: a, afterTokens: b, saved: saved, pct: pct, link: LINK, lines: lines, text: lines.join('\n'), truncated: o.cut || r.cut };
+    return { before: o.text, after: r.text, beforeTokens: a, afterTokens: b, saved: saved, pct: pct, link: LINK, on: on, lines: lines, text: lines.join('\n'), truncated: o.cut || r.cut };
   }
   /* Builds the card as DOM using textContent only, so prompt text can never run as markup. */
   function render(doc, card) {
@@ -38,7 +39,7 @@
     }
     box.appendChild(row('Before \u00b7 about ' + card.beforeTokens + ' tokens', '\u201c' + card.before + '\u201d', '#fff'));
     box.appendChild(row('After \u00b7 about ' + card.afterTokens + ' tokens', '\u201c' + card.after + '\u201d', '#fff'));
-    var s = doc.createElement('div'); s.textContent = 'Saved about ' + card.saved + ' tokens (' + card.pct + '%) with Prompt Efficiently. Rough estimate.'; s.style.cssText = 'font-weight:700;margin:2px 0 4px;color:#0a8757'; box.appendChild(s);
+    var s = doc.createElement('div'); s.textContent = 'Saved about ' + card.saved + ' tokens (' + card.pct + '%) with Prompt Efficiently' + (card.on || '') + '. Rough estimate.'; s.style.cssText = 'font-weight:700;margin:2px 0 4px;color:#0a8757'; box.appendChild(s);
     var k = doc.createElement('div'); k.textContent = card.link; k.style.cssText = 'font-size:12px;color:#5b5566;overflow-wrap:anywhere'; box.appendChild(k);
     return box;
   }

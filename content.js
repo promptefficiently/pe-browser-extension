@@ -43,6 +43,13 @@
   var SITE_MAP = [
     [/^(www\.)?chatgpt\.com$/, 'chatgpt'],
     [/^claude\.ai$/, 'claude'],
+    [/^(www\.)?kimi\.(com|ai)$/, 'kimi'],
+    [/^chat\.qwen\.ai$/, 'qwen_chat'],
+    [/^v0\.(app|dev)$/, 'v0'],
+    [/^(www\.)?elevenlabs\.io$/, 'elevenlabs'],
+    [/^(www\.)?suno\.(com|ai)$/, 'suno'],
+    [/^(app\.)?runway(ml)?\.com$/, 'runway'],
+    [/^(www\.)?pika\.art$/, 'pika'],
     [/^gemini\.google\.com$/, 'gemini'],
     [/^(www\.)?grok\.com$/, 'grok'],
     [/^(www\.)?x\.ai$/, 'grok'],
@@ -359,7 +366,7 @@
     var shareBtn=el('button','Share before/after');shareBtn.type='button';shareBtn.hidden=true;var shareBox=null;
     shareBtn.addEventListener('click',function(){
       if(shareBox){shareBox.remove();shareBox=null;return;}
-      var data=window.PEShare&&window.PEShare.build(original,after.value);if(!data)return;
+      var data=window.PEShare&&window.PEShare.build(original,after.value,platform&&platform.name);if(!data)return;
       shareBox=document.createElement('div');shareBox.className='pe-share-box';
       var note=document.createElement('p');note.textContent='This is exactly what will be copied. Nothing is sent or posted by us. Check it for anything private first.'+(data.truncated?' Long prompts are shortened here.':'');shareBox.appendChild(note);
       var cp=document.createElement('button');cp.type='button';cp.textContent='Copy share text';
@@ -374,7 +381,7 @@
       if(typeof chrome==='undefined'||!chrome.runtime){status.textContent='Install and sign in to the extension to rewrite.';return;}
       chrome.runtime.sendMessage({type:'pe-rewrite',requestId:id,text:original,consent:true,adult:true,mode:modeSel.value},function(result){
         if(chrome.runtime.lastError||!result?.ok){status.textContent=result?.message||'Rewrite unavailable. Your original prompt is unchanged. No automatic retry was made.';return;}
-        after.value=result.rewrite;after.hidden=false;afterLabel.hidden=true;copy.hidden=false;shareBtn.hidden=!(!result.unchanged&&window.PEShare&&window.PEShare.build(original,result.rewrite));generate.hidden=true;label.hidden=true;
+        after.value=result.rewrite;after.hidden=false;afterLabel.hidden=true;copy.hidden=false;shareBtn.hidden=!(!result.unchanged&&window.PEShare&&window.PEShare.build(original,result.rewrite,platform&&platform.name));generate.hidden=true;label.hidden=true;
         status.textContent=result.unchanged?'No safer version returned. Original kept.':'Review meaning. Lower costs are not guaranteed.';positionBubble();
       });
     });
